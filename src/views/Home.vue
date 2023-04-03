@@ -1,18 +1,28 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <Timeline msg="Welcome to Your Vue.js App" />
+    <GridBox />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import Timeline from "@/components/timeline/Timeline";
+import GridBox from "@/components/gridBox/GridBox";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld,
+    Timeline,
+    GridBox,
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.home {
+  max-width: 50%;
+  margin: 0 auto;
+}
+</style>

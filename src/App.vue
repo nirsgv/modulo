@@ -1,13 +1,35 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
     <router-view />
-  </div>
+  </v-app>
 </template>
+<script>
+import { WebMidi } from "webmidi";
+import { mapActions, mapGetters } from "vuex";
 
+export default {
+  name: "App",
+  components: {},
+  mounted() {
+    const onEnabled = () => {
+      this.initTimer();
+    };
+    WebMidi.enable()
+      .then(onEnabled)
+      .catch((err) => alert(err));
+  },
+  computed: {
+    ...mapGetters("timeline", ["bpm"]),
+  },
+  methods: {
+    ...mapActions("timeline", ["setBpm", "initTimer"]),
+  },
+};
+</script>
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
