@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
     <Timeline msg="Welcome to Your Vue.js App" />
     <GridBox />
   </div>
@@ -22,7 +21,8 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  max-width: 50%;
+  max-width: 60%;
   margin: 0 auto;
 }
+
 </style>

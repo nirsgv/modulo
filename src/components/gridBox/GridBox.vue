@@ -1,28 +1,37 @@
 <template>
   <div class="hello">
     <div class="selector">
-      {{ patterns[patternUid] }}
-      {{ layers }}
+      <div>
+        {{ patterns }}
+      </div>
+      <div :style="{ color: 'blue' }">
+        {{ pattern }}
+      </div>
+
+      <v-select
+        label="Select"
+        :items="Object.keys(patterns)"
+        @change="() => setSelectedPattern({ uid: this.patternUid })"
+      />
     </div>
-    <v-select label="Select" :items="Object.keys(patterns)"></v-select>
-    <button @click="savePattern">save</button>
+    <button @click="createNewPattern">save new</button>
 
     <div
       v-for="(layer, layerIdx) in layers"
       :key="layerIdx"
       class="layers"
-      :class="{ selected: selectedLayer === layer }"
+      :class="{ selected: selectedLayer === layer.uid }"
     >
-      <button @click="(e) => (selectedLayer = layer)">select</button>
+      <button @click="(e) => (selectedLayer = layer.uid)">select</button>
       <button
         type="checkbox"
-        v-for="(item, boxIndex) in Array.from({ length: barLength })"
-        :key="boxIndex"
-        :class="{ highlighted: pointer % barLength === boxIndex }"
-        :checked="!grid[layer] ? false : grid[layer][`box-${boxIndex}`]"
-        @click="toggleBox({ layer, boxIndex })"
+        v-for="(item, bIdx) in Array.from({ length: barLength })"
+        :key="`layerIdx-${layerIdx}-bIdx-${bIdx}`"
+        :class="{ highlighted: pointer % barLength === bIdx }"
+        :checked="!pattern[layer.uid] ? false : pattern[layer.uid][`b-${bIdx}`]"
+        @click="toggleBox({ uid: layer.uid, bIdx })"
       >
-        {{ boxIndex }}
+        {{ bIdx }}
       </button>
     </div>
   </div>
@@ -42,34 +51,42 @@ export default {
     },
   },
   created() {
-    this.patternUid = uuidv4();
-    this.createEmptyPattern({ uid: this.patternUid });
-    this.savePattern(this.grid, this.patternUid);
+    this.createNewPattern();
   },
   data: function () {
     return {
       grid: {},
       selectedLayer: "a",
-      layers: [new Channel()],
+      layers: [new Channel(), new Channel(), new Channel()],
       patternUid: null,
     };
   },
   computed: {
     ...mapGetters("timeline", ["pointer", "barLength"]),
-    ...mapGetters("patterns", ["patterns"]),
+    ...mapGetters("patterns", ["patterns", "pattern"]),
   },
   methods: {
-    ...mapActions("patterns", ["createEmptyPattern", "savePattern"]),
-    toggleBox: function ({ layer, boxIndex }) {
-      const newGrid = { ...this.grid };
-      if (!newGrid[layer.uid]) newGrid[layer.uid] = {};
-      if (newGrid[layer.uid][`box-${boxIndex}`]) {
-        newGrid[layer.uid][`box-${boxIndex}`] = false;
+    ...mapActions("patterns", [
+      "createEmptyPattern",
+      "savePattern",
+      "setSelectedPattern",
+    ]),
+    toggleBox: function ({ uid, bIdx }) {
+      const cPattern = { ...this.pattern };
+      if (!cPattern[uid]) cPattern[uid] = {};
+      if (cPattern[uid][`b-${bIdx}`]) {
+        cPattern[uid][`b-${bIdx}`] = false;
       } else {
-        newGrid[layer.uid][`box-${boxIndex}`] = true;
+        cPattern[uid][`b-${bIdx}`] = true;
       }
-      this.grid = newGrid;
+      this.grid = cPattern;
       this.savePattern({ pattern: this.grid, uid: this.patternUid });
+    },
+    createNewPattern() {
+      this.patternUid = uuidv4();
+      this.createEmptyPattern({ uid: this.patternUid });
+      this.savePattern({ pattern: {}, uid: this.patternUid });
+      this.setSelectedPattern({ uid: this.patternUid });
     },
     addChannel: function () {
       return { ...this.grid, a: new Channel({ uid: uuidv4() }) };
@@ -92,6 +109,14 @@ ul {
   padding: 0;
 }
 .layers {
+}
+button {
+  width: 20px;
+  height: 40px;
+  margin: 0;
+  outline: 1px solid #ccc;
+  font-size: 10px;
+  color: #aaa;
 }
 .selected {
   outline: 1px solid #ddd;

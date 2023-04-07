@@ -13,8 +13,8 @@ export class Pattern {
 }
 
 export class Channel {
-  constructor( name = "asd", uid = "sdf" ) {
-    this.name = name || "";
+  constructor( name = "", uid = "" ) {
+    this.name = name || uuidv4();
     this.uid = uid || uuidv4();
     this.defaultMidiChannel = 1;
     this.defaultMidiInput = null;
