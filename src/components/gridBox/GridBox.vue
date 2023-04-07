@@ -11,7 +11,7 @@
       <v-select
         label="Select"
         :items="Object.keys(patterns)"
-        @change="() => setSelectedPattern({ uid: this.patternUid })"
+        @change="(val) => setSelectedPattern({ uid: val })"
       />
     </div>
     <button @click="createNewPattern">save new</button>

@@ -5,6 +5,7 @@ export class Pattern {
     this.uid = uid || uuidv4();
     this.bars = 4;
     this.grid = {};
+    this.channels = [];
   }
 
   getUid() {
