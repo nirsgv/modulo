@@ -6,9 +6,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import Timeline from "@/components/timeline/Timeline";
-import GridBox from "@/components/gridBox/GridBox";
+import { GridBox, Timeline } from "@/components/index.js";
 
 export default {
   name: "Home",
@@ -21,7 +19,7 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  max-width: 60%;
+  max-width: 80%;
   margin: 0 auto;
 }
 

@@ -4,8 +4,7 @@ export class Pattern {
     this.name = name || uuidv4();
     this.uid = uid || uuidv4();
     this.bars = 4;
-    this.grid = {};
-    this.channels = [];
+    this.tracks = [new Channel()];
   }
 
   getUid() {
@@ -20,6 +19,7 @@ export class Channel {
     this.defaultMidiChannel = 1;
     this.defaultMidiInput = null;
     this.defaultMidiOutput = null;
+    this.noteEvents = {};
   }
 
   getUid() {

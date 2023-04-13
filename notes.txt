@@ -1,0 +1,6 @@
+1. move toggleBox to store actions
+2. remove layers from data
+3. add/remove track
+4. copy/paste pattern
+5. name pattern
+6. add output reducer

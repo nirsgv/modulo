@@ -1,95 +1,98 @@
 <template>
   <div class="hello">
+    <Title
+      :title="pattern.name"
+      :editing="true"
+      @change_title="val => changePatternTitle(val)"
+    />
     <div class="selector">
-      <div>
+      <button @click="copyPattern">copy</button>
+      <button @click="pastePattern">paste</button>
+      <h6>
         {{ patterns }}
-      </div>
-      <div :style="{ color: 'blue' }">
-        {{ pattern }}
-      </div>
-
+      </h6>
       <v-select
         label="Select"
-        :items="Object.keys(patterns)"
-        @change="(val) => setSelectedPattern({ uid: val })"
+        :items="Object.values(patterns)"
+        item-text="name"
+        item-value="uid"
+        return-object
+        @change="setSelectedPattern"
       />
     </div>
     <button @click="createNewPattern">save new</button>
 
     <div
-      v-for="(layer, layerIdx) in layers"
-      :key="layerIdx"
+      v-for="(track, trackIdx) in pattern.tracks"
+      :key="trackIdx"
       class="layers"
-      :class="{ selected: selectedLayer === layer.uid }"
+      :class="{ selected: selectedLayer === track.uid }"
     >
-      <button @click="(e) => (selectedLayer = layer.uid)">select</button>
+      <button @click="removeTrack({ trackUid: track.uid })">remove</button>
+      <button @click="(e) => (selectedLayer = track.uid)">select</button>
       <button
         type="checkbox"
         v-for="(item, bIdx) in Array.from({ length: barLength })"
-        :key="`layerIdx-${layerIdx}-bIdx-${bIdx}`"
+        :key="`layerIdx-${trackIdx}-bIdx-${bIdx}`"
         :class="{ highlighted: pointer % barLength === bIdx }"
-        :checked="!pattern[layer.uid] ? false : pattern[layer.uid][`b-${bIdx}`]"
-        @click="toggleBox({ uid: layer.uid, bIdx })"
+        :checked="
+          !pattern[track.uid]?.noteEvents
+            ? false
+            : pattern[track.uid]?.noteEvents[`b-${bIdx}`]
+        "
+        @click="
+          toggleBox({
+            channelUid: track.uid,
+            patternUid: selectedPatternUid,
+            bIdx,
+          })
+        "
       >
         {{ bIdx }}
       </button>
     </div>
+    <button @click="addTrack">Add track</button>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import { v4 as uuidv4 } from "uuid";
-import { Channel } from "../../helpers/index.js";
+import { Title } from "@/components/index.js";
 
 export default {
   name: "GridBox",
-  components: {},
-  props: {
-    patternId: {
-      type: String,
-    },
-  },
+  components: { Title },
   created() {
     this.createNewPattern();
   },
   data: function () {
     return {
-      grid: {},
       selectedLayer: "a",
-      layers: [new Channel(), new Channel(), new Channel()],
       patternUid: null,
     };
   },
   computed: {
     ...mapGetters("timeline", ["pointer", "barLength"]),
-    ...mapGetters("patterns", ["patterns", "pattern"]),
+    ...mapGetters("patterns", ["patterns", "patternNames", "pattern", "selectedPatternUid"]),
   },
   methods: {
     ...mapActions("patterns", [
       "createEmptyPattern",
       "savePattern",
       "setSelectedPattern",
+      "toggleBox",
+      "addTrack",
+      "removeTrack",
+      "copyPattern",
+      "pastePattern",
+      "changePatternTitle",
     ]),
-    toggleBox: function ({ uid, bIdx }) {
-      const cPattern = { ...this.pattern };
-      if (!cPattern[uid]) cPattern[uid] = {};
-      if (cPattern[uid][`b-${bIdx}`]) {
-        cPattern[uid][`b-${bIdx}`] = false;
-      } else {
-        cPattern[uid][`b-${bIdx}`] = true;
-      }
-      this.grid = cPattern;
-      this.savePattern({ pattern: this.grid, uid: this.patternUid });
-    },
     createNewPattern() {
       this.patternUid = uuidv4();
       this.createEmptyPattern({ uid: this.patternUid });
-      this.savePattern({ pattern: {}, uid: this.patternUid });
+      this.savePattern({ pattern: null, uid: this.patternUid });
       this.setSelectedPattern({ uid: this.patternUid });
-    },
-    addChannel: function () {
-      return { ...this.grid, a: new Channel({ uid: uuidv4() }) };
     },
   },
 };
@@ -107,8 +110,6 @@ button[checked="checked"] {
 ul {
   list-style-type: none;
   padding: 0;
-}
-.layers {
 }
 button {
   width: 20px;

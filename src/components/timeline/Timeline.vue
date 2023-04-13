@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
     <h1>{{ pointer }}</h1>
     <h1>{{ pointer % barLength }}</h1>
     <h1 @click="toggleRun">{{ isRunning }}</h1>
