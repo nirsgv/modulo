@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 export class Pattern {
   constructor({ name, uid }) {
-    this.name = name || uuidv4();
+    this.name = name || `Untitled ${uuidv4()}`;
     this.uid = uid || uuidv4();
     this.bars = 4;
     this.tracks = [new Channel()];

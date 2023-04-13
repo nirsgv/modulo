@@ -16,7 +16,9 @@ export default {
   components: {},
   mounted() {
     const onEnabled = () => {
+      this.initMidiInterface();
       this.initTimer();
+      console.log({ WebMidi });
     };
     WebMidi.enable()
       .then(onEnabled)
@@ -27,6 +29,7 @@ export default {
   },
   methods: {
     ...mapActions("timeline", ["setBpm", "initTimer"]),
+    ...mapActions("physical_interface", ["initMidiInterface"]),
   },
 };
 </script>

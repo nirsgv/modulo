@@ -72,6 +72,7 @@ const mutations = {
 const actions = {
   initTimer: ({ commit }) => {
     const output = WebMidi.getOutputByName(WebMidi.outputs[0].name);
+
     const channel = output.channels[1];
     if (!state.channel) {
       commit("INNIT", channel);
