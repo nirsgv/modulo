@@ -35,7 +35,7 @@
         v-for="(item, bIdx) in Array.from({ length: barLength })"
         :key="`layerIdx-${trackIdx}-bIdx-${bIdx}`"
         :class="{ highlighted: pointer % barLength === bIdx }"
-        :checked="
+        :checked=" 
           !pattern[track.uid]?.noteEvents
             ? false
             : pattern[track.uid]?.noteEvents[`b-${bIdx}`]

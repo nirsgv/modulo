@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import timeline from "@/store/timeline.js";
 import patterns from "@/store/patterns.js";
-import physical_interface from "@/store/physical_interface.js";
+import midi_setup from "@/store/midi_setup.js";
 
 Vue.use(Vuex);
 
@@ -45,7 +45,7 @@ export default new Vuex.Store({
   actions,
   getters,
   modules: {
-    physical_interface,
+    midi_setup,
     timeline,
     patterns,
   },

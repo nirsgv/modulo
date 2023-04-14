@@ -1,4 +1,4 @@
-/* eslint-disable no-debugger */
+import { Note } from "webmidi";
 import { Pattern, Channel } from "@/helpers/index.js";
 const state = {
   patterns: {},
@@ -32,9 +32,11 @@ const mutations = {
     const cPattern = window.structuredClone(state.patterns[patternUid]);
     if (!cPattern[channelUid]) cPattern[channelUid] = new Channel();
     if (cPattern[channelUid].noteEvents[`b-${bIdx}`]) {
-      cPattern[channelUid].noteEvents[`b-${bIdx}`] = false;
+      console.log(Note);
+      console.log(new Note(60, { rawAttack: 127, rawRelease: 127 }));
+      cPattern[channelUid].noteEvents[`b-${bIdx}`] = null;
     } else {
-      cPattern[channelUid].noteEvents[`b-${bIdx}`] = true;
+      cPattern[channelUid].noteEvents[`b-${bIdx}`] = new Note(60, { rawAttack: 127, rawRelease: 127 });
     }
     const newPatterns = window.structuredClone(state.patterns);
     newPatterns[patternUid] = cPattern;
