@@ -32,8 +32,6 @@ const mutations = {
     const cPattern = window.structuredClone(state.patterns[patternUid]);
     if (!cPattern[channelUid]) cPattern[channelUid] = new Channel();
     if (cPattern[channelUid].noteEvents[`b-${bIdx}`]) {
-      console.log(Note);
-      console.log(new Note(60, { rawAttack: 127, rawRelease: 127 }));
       cPattern[channelUid].noteEvents[`b-${bIdx}`] = null;
     } else {
       cPattern[channelUid].noteEvents[`b-${bIdx}`] = new Note(60, { rawAttack: 127, rawRelease: 127 });
