@@ -3,5 +3,7 @@
 3. add/remove track
 4. copy/paste pattern
 5. name pattern
-6. add interface reducer
+6. add interface reducer store
 7. select new pattern in v-select
+8. name tracks
+9. limit track length

@@ -4,7 +4,7 @@ export class Pattern {
     this.name = name || `Untitled ${uuidv4()}`;
     this.uid = uid || uuidv4();
     this.bars = 4;
-    this.tracks = [new Channel()];
+    this.tracks = [new Track()];
   }
 
   getUid() {
@@ -12,7 +12,7 @@ export class Pattern {
   }
 }
 
-export class Channel {
+export class Track {
   constructor( name = "", uid = "" ) {
     this.name = name || uuidv4();
     this.uid = uid || uuidv4();

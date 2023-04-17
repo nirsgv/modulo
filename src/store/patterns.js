@@ -1,5 +1,5 @@
 import { Note } from "webmidi";
-import { Pattern, Channel } from "@/helpers/index.js";
+import { Pattern, Track } from "@/helpers/index.js";
 const state = {
   patterns: {},
   selectedPatternUid: "",
@@ -16,7 +16,6 @@ const mutations = {
   CREATE_EMPTY_PATTERN: (state, { uid = null }) => {
     const newPatterns = window.structuredClone(state.patterns);
     newPatterns[uid] = new Pattern({ uid });
-    console.log(newPatterns);
     state.patterns = newPatterns;
   },
   SAVE_PATTERN: (state, { pattern, uid }) => {
@@ -30,11 +29,14 @@ const mutations = {
   },
   TOGGLE_BOX: (state, { channelUid, patternUid, bIdx }) => {
     const cPattern = window.structuredClone(state.patterns[patternUid]);
-    if (!cPattern[channelUid]) cPattern[channelUid] = new Channel();
+    if (!cPattern[channelUid]) cPattern[channelUid] = new Track();
     if (cPattern[channelUid].noteEvents[`b-${bIdx}`]) {
       cPattern[channelUid].noteEvents[`b-${bIdx}`] = null;
     } else {
-      cPattern[channelUid].noteEvents[`b-${bIdx}`] = new Note(60, { rawAttack: 127, rawRelease: 127 });
+      cPattern[channelUid].noteEvents[`b-${bIdx}`] = new Note(60, {
+        rawAttack: 127,
+        rawRelease: 127,
+      });
     }
     const newPatterns = window.structuredClone(state.patterns);
     newPatterns[patternUid] = cPattern;
@@ -67,6 +69,13 @@ const mutations = {
     newPatterns[state.selectedPatternUid].name = val;
     state.patterns = newPatterns;
   },
+  CHANGE_TRACK_TITLE: (state, { val, trackUid }) => {
+    const newPatterns = window.structuredClone(state.patterns);
+    newPatterns[state.selectedPatternUid].tracks = newPatterns[
+      state.selectedPatternUid
+    ].tracks.map((t) => (t.uid !== trackUid ? t : { ...t, name: val }));
+    state.patterns = newPatterns;
+  },
 };
 
 const actions = {
@@ -83,7 +92,7 @@ const actions = {
     commit("TOGGLE_BOX", { channelUid, patternUid, bIdx });
   },
   addTrack: ({ commit }) => {
-    const track = new Channel();
+    const track = new Track();
     commit("ADD_TRACK", { track });
   },
   removeTrack: ({ commit }, { trackUid }) => {
@@ -97,6 +106,9 @@ const actions = {
   },
   changePatternTitle: ({ commit }, { val }) => {
     commit("CHANGE_PATTERN_TITLE", { val });
+  },
+  changeTrackTitle: ({ commit }, { val, trackUid }) => {
+    commit("CHANGE_TRACK_TITLE", { val, trackUid });
   },
 };
 

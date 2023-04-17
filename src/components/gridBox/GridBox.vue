@@ -3,7 +3,7 @@
     <Title
       :title="pattern.name"
       :editing="true"
-      @change_title="val => changePatternTitle(val)"
+      @change_title="({ val }) => changePatternTitle({ val })"
     />
     <div class="selector">
       <button @click="copyPattern">copy</button>
@@ -28,14 +28,28 @@
       class="layers"
       :class="{ selected: selectedLayer === track.uid }"
     >
+      <!-- <button class="track-name ellipsis">{{ track.name }}</button> -->
+      <button class="track-name ellipsis">
+        <Title
+          :title="track.name"
+          :editing="true"
+          @change_title="({ val }) => changeTrackTitle({ val, trackUid: track.uid })"
+        >
+          <template #content>
+            <button class="track-name ellipsis">{{ track.name }}</button>
+          </template>
+        </Title>
+      </button>
+
       <button @click="removeTrack({ trackUid: track.uid })">remove</button>
       <button @click="(e) => (selectedLayer = track.uid)">select</button>
+
       <button
         type="checkbox"
         v-for="(item, bIdx) in Array.from({ length: barLength })"
         :key="`layerIdx-${trackIdx}-bIdx-${bIdx}`"
         :class="{ highlighted: pointer % barLength === bIdx }"
-        :checked=" 
+        :checked="
           !pattern[track.uid]?.noteEvents
             ? false
             : pattern[track.uid]?.noteEvents[`b-${bIdx}`]
@@ -74,7 +88,12 @@ export default {
   },
   computed: {
     ...mapGetters("timeline", ["pointer", "barLength"]),
-    ...mapGetters("patterns", ["patterns", "patternNames", "pattern", "selectedPatternUid"]),
+    ...mapGetters("patterns", [
+      "patterns",
+      "patternNames",
+      "pattern",
+      "selectedPatternUid",
+    ]),
   },
   methods: {
     ...mapActions("patterns", [
@@ -87,6 +106,7 @@ export default {
       "copyPattern",
       "pastePattern",
       "changePatternTitle",
+      "changeTrackTitle",
     ]),
     createNewPattern() {
       this.patternUid = uuidv4();
@@ -118,6 +138,10 @@ button {
   outline: 1px solid #ccc;
   font-size: 10px;
   color: #aaa;
+  padding: 0 4px;
+}
+.track-name {
+  width: 60px;
 }
 .selected {
   outline: 1px solid #ddd;
